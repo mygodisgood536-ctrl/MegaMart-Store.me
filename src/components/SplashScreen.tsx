@@ -7,7 +7,7 @@ export default function SplashScreen() {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShow(false), 2600);
+    const timer = setTimeout(() => setShow(false), 3800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -16,62 +16,118 @@ export default function SplashScreen() {
       {show && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.55, ease: "easeInOut" }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-900 to-emerald-900"
+          exit={{ opacity: 0, scale: 1.08, filter: "blur(8px)" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
+          style={{
+            background: "radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%)",
+          }}
         >
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.15, 0.25, 0.15],
+              x: [0, 30, 0],
+              y: [0, -20, 0],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute w-[420px] h-[420px] rounded-full"
+            style={{
+              background: "radial-gradient(circle, #ff6a00 0%, transparent 70%)",
+              filter: "blur(60px)",
+              top: "20%",
+              left: "10%",
+            }}
+          />
+          <motion.div
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.1, 0.2, 0.1],
+              x: [0, -40, 0],
+            }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="absolute w-[380px] h-[380px] rounded-full"
+            style={{
+              background: "radial-gradient(circle, #ff9f43 0%, transparent 70%)",
+              filter: "blur(50px)",
+              bottom: "15%",
+              right: "5%",
+            }}
+          />
+
+          {[...Array(12)].map((_, i) => (
             <motion.div
-              animate={{ scale: [1, 1.35, 1], opacity: [0.12, 0.06, 0.12] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full border border-emerald-400/25"
+              key={i}
+              className="absolute w-1 h-1 rounded-full bg-orange-400/60"
+              style={{
+                left: `${10 + (i * 7) % 80}%`,
+                top: `${15 + (i * 11) % 70}%`,
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0.2, 0.8, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 3 + (i % 3),
+                repeat: Infinity,
+                delay: i * 0.2,
+                ease: "easeInOut",
+              }}
             />
-            <motion.div
-              animate={{ scale: [1.15, 1.55, 1.15], opacity: [0.08, 0.04, 0.08] }}
-              transition={{ duration: 5, repeat: Infinity, delay: 0.4 }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full border border-teal-300/15"
-            />
-          </div>
+          ))}
 
           <motion.div
-            initial={{ scale: 0.45, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.65, ease: "easeOut" }}
-            className="relative z-10 flex flex-col items-center"
+            initial={{ scale: 0.6, opacity: 0, rotateY: -30 }}
+            animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 mb-10"
+            style={{ perspective: 800 }}
           >
             <motion.div
-              animate={{ rotateY: [0, 360] }}
-              transition={{ duration: 2, ease: "easeInOut" }}
-              className="w-22 h-22 w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-2xl shadow-emerald-950/60 mb-6"
+              animate={{ rotateY: [0, 8, -8, 0], rotateX: [0, 4, -4, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="relative w-28 h-28"
               style={{ transformStyle: "preserve-3d" }}
             >
-              <span className="text-white font-black text-5xl">M</span>
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 shadow-2xl shadow-orange-900/50 flex items-center justify-center">
+                <span className="text-white font-black text-5xl tracking-tighter drop-shadow-lg">
+                  M
+                </span>
+              </div>
+              <div
+                className="absolute -inset-1 rounded-3xl opacity-40"
+                style={{
+                  background: "linear-gradient(135deg, #ff9f43, transparent 50%)",
+                  transform: "translateZ(-12px)",
+                }}
+              />
             </motion.div>
-
-            <motion.h1
-              initial={{ y: 18, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.35, duration: 0.45 }}
-              className="text-4xl font-bold text-white tracking-tight"
-            >
-              Mega<span className="text-emerald-300">mart</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.45 }}
-              className="mt-2 text-emerald-200/75 text-sm tracking-wide"
-            >
-              Quality Goods • Great Prices
-            </motion.p>
           </motion.div>
 
+          <motion.h1
+            initial={{ y: 24, opacity: 0, letterSpacing: "0.15em" }}
+            animate={{ y: 0, opacity: 1, letterSpacing: "0.02em" }}
+            transition={{ delay: 0.55, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 text-4xl sm:text-5xl font-bold text-white tracking-tight"
+          >
+            Mega<span className="text-orange-400">mart</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ y: 16, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.7 }}
+            className="relative z-10 mt-3 text-orange-200/80 text-sm sm:text-base tracking-wide font-medium"
+          >
+            Shop what you love
+          </motion.p>
+
           <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: 112 }}
-            transition={{ delay: 0.9, duration: 1.3, ease: "easeInOut" }}
-            className="absolute bottom-16 h-1 rounded-full bg-emerald-400/80"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 1.4, duration: 2.0, ease: "easeInOut" }}
+            className="absolute bottom-16 h-[2px] w-24 origin-left rounded-full bg-gradient-to-r from-orange-500 to-amber-400"
           />
         </motion.div>
       )}

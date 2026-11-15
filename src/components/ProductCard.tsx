@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Product } from "@/lib/types";
 import { formatPrice, calculateDiscount } from "@/lib/utils";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface Props {
   product: Product;
@@ -27,64 +27,53 @@ export default function ProductCard({ product, index = 0 }: Props) {
     e.stopPropagation();
     addItem(product);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1400);
+    setTimeout(() => setAdded(false), 1200);
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: Math.min(index * 0.04, 0.3), duration: 0.4 }}
-      whileHover={{ y: -6 }}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100/80 transition-shadow duration-300"
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ delay: Math.min(index * 0.03, 0.2), duration: 0.35 }}
+      className="group relative bg-white"
     >
-      <Link href={`/product/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <Link href={`/product/${product.id}`} className="block">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-lg">
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover group-hover:scale-[1.03] transition-transform duration-400"
+            sizes="(max-width: 640px) 50vw, 25vw"
           />
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
             {product.promo && (
-              <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded bg-black text-white leading-none">
                 {product.promo}
               </span>
             )}
             {discount > 0 && (
-              <span className="px-2.5 py-1 text-[10px] font-bold rounded-full bg-emerald-600 text-white shadow-md">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-orange-500 text-white leading-none">
                 -{discount}%
               </span>
             )}
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4">
-          <p className="text-[11px] text-emerald-600 font-semibold mb-0.5 uppercase tracking-wide">
-            {product.category}
-          </p>
-          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 min-h-[2.4rem]">
+        <div className="pt-2 px-0.5">
+          <h3 className="text-[13px] text-gray-800 leading-snug line-clamp-2 min-h-[2.4rem]">
             {product.name}
           </h3>
-
-          <div className="flex items-center gap-1 mt-1.5 text-amber-500">
-            <Star size={12} fill="currentColor" />
-            <span className="text-xs font-medium text-gray-700">{product.rating}</span>
-            <span className="text-xs text-gray-400">({product.reviews})</span>
-          </div>
-
-          <div className="mt-2.5 flex items-end justify-between gap-2">
-            <div>
-              <p className="font-bold text-base sm:text-lg text-gray-900 leading-none">
+          <div className="mt-1.5 flex items-end justify-between gap-1">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="text-[15px] font-bold text-orange-600 leading-none">
                 {formatPrice(product.price)}
-              </p>
+              </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <p className="text-[11px] text-gray-400 line-through mt-0.5">
+                <span className="text-[11px] text-gray-400 line-through leading-none">
                   {formatPrice(product.originalPrice)}
-                </p>
+                </span>
               )}
             </div>
           </div>
@@ -93,14 +82,14 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
       <button
         onClick={handleAdd}
-        className={`absolute bottom-3.5 right-3.5 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+        className={`absolute bottom-[52px] right-1.5 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-200 ${
           added
-            ? "bg-emerald-500 text-white scale-110"
-            : "bg-white text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-100"
+            ? "bg-orange-500 text-white scale-110"
+            : "bg-white/95 text-gray-700 hover:bg-orange-500 hover:text-white border border-gray-200"
         }`}
         aria-label="Add to cart"
       >
-        <ShoppingCart size={16} />
+        <ShoppingCart size={14} strokeWidth={2.2} />
       </button>
     </motion.div>
   );

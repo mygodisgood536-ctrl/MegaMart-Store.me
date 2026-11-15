@@ -1,145 +1,138 @@
+"use client";
+
+import { useMemo } from "react";
 import productsData from "@/data/products.json";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
+import TopSearch from "@/components/TopSearch";
 import Link from "next/link";
-import { ArrowRight, Sparkles, Truck, MessageCircle, Shield } from "lucide-react";
+import { ChevronRight, Zap, Gift } from "lucide-react";
 
 const products = productsData as Product[];
 
-const categories = Array.from(new Set(products.map((p) => p.category)));
-
-const categoryIcons: Record<string, string> = {
-  Electronics: "📱",
-  Fashion: "👕",
-  Jewelry: "💎",
-  Accessories: "⌚",
-  Home: "🏠",
+const categoryMeta: Record<string, { emoji: string; color: string }> = {
+  Electronics: { emoji: "📱", color: "bg-blue-50" },
+  Fashion: { emoji: "👕", color: "bg-pink-50" },
+  Jewelry: { emoji: "💎", color: "bg-purple-50" },
+  Accessories: { emoji: "⌚", color: "bg-amber-50" },
+  Home: { emoji: "🏠", color: "bg-emerald-50" },
 };
 
 export default function HomePage() {
-  const featured = products.filter((p) => p.featured);
-  const flashSales = products.filter((p) => p.promo === "Flash Sale" || p.promo === "Black Friday");
-  const allProducts = products;
+  const sorted = useMemo(() => {
+    return [...products].sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return 0;
+    });
+  }, []);
+
+  const categories = useMemo(
+    () => Array.from(new Set(products.map((p) => p.category))),
+    []
+  );
+
+  const deals = sorted.filter(
+    (p) => p.promo || (p.originalPrice && p.originalPrice > p.price)
+  );
+  const featured = sorted.filter((p) => p.featured);
 
   return (
-    <div className="pb-16">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-800 to-emerald-950 text-white">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-400 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-400 rounded-full blur-3xl" />
-        </div>
+    <div className="max-w-lg mx-auto bg-white min-h-screen">
+      <TopSearch />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm mb-6">
-              <Sparkles size={14} className="text-amber-300" />
-              <span>New arrivals & flash sales live now</span>
+      <div className="flex items-center justify-center gap-4 px-3 py-2 bg-orange-50 text-[11px] text-orange-800 font-medium">
+        <span>✓ Quality products</span>
+        <span className="text-orange-300">|</span>
+        <span>✓ Order via WhatsApp</span>
+      </div>
+
+      <div className="px-3 pt-3">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 via-black to-gray-900 p-4 text-white">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+          <div className="relative flex items-center justify-between gap-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-orange-500 text-[10px] font-bold uppercase tracking-wide mb-1.5">
+                Hot Deals
+              </div>
+              <h2 className="text-xl font-black leading-tight">Up to 40% OFF</h2>
+              <p className="text-xs text-gray-300 mt-0.5">Limited time offers</p>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              Shop smarter.
-              <br />
-              <span className="text-emerald-300">Live better.</span>
-            </h1>
-            <p className="mt-5 text-lg text-emerald-100/90 max-w-lg">
-              Discover quality electronics, fashion, jewelry and more. Add to cart and order instantly via WhatsApp.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="#featured"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-emerald-900 font-semibold hover:bg-emerald-50 transition-colors shadow-lg shadow-emerald-950/30"
-              >
-                Shop Featured
-                <ArrowRight size={18} />
-              </Link>
-              <Link
-                href="#categories"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/30 text-white font-medium hover:bg-white/10 transition-colors"
-              >
-                Browse Categories
-              </Link>
-            </div>
+            <Link
+              href="#deals"
+              className="flex-shrink-0 px-4 py-2 rounded-full bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition-colors"
+            >
+              Shop Now
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Trust bar */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          {[
-            { icon: MessageCircle, label: "Order via WhatsApp" },
-            { icon: Truck, label: "Fast Delivery" },
-            { icon: Shield, label: "Quality Guaranteed" },
-            { icon: Sparkles, label: "Great Prices" },
-          ].map((item) => (
-            <div key={item.label} className="flex items-center justify-center gap-2 text-sm text-gray-600">
-              <item.icon size={16} className="text-emerald-600" />
-              <span className="font-medium">{item.label}</span>
-            </div>
-          ))}
+      <section className="px-3 pt-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[15px] font-bold text-gray-900">Shop by Category</h2>
+          <Link
+            href="/categories"
+            className="text-xs text-gray-500 flex items-center gap-0.5"
+          >
+            See all <ChevronRight size={14} />
+          </Link>
+        </div>
+        <div className="grid grid-cols-4 gap-3">
+          {categories.slice(0, 8).map((cat) => {
+            const meta = categoryMeta[cat] || { emoji: "🛍️", color: "bg-gray-50" };
+            return (
+              <Link
+                key={cat}
+                href={`/category/${encodeURIComponent(cat.toLowerCase())}`}
+                className="flex flex-col items-center gap-1.5"
+              >
+                <div
+                  className={`w-14 h-14 rounded-full ${meta.color} flex items-center justify-center text-2xl shadow-sm border border-gray-100`}
+                >
+                  {meta.emoji}
+                </div>
+                <span className="text-[11px] text-gray-700 text-center leading-tight font-medium">
+                  {cat}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      {/* Categories */}
-      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Shop by Category</h2>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat}
-              href={`/category/${encodeURIComponent(cat.toLowerCase())}`}
-              className="group flex flex-col items-center gap-2 p-5 rounded-2xl bg-white border border-gray-100 hover:border-emerald-200 hover:shadow-md transition-all"
-            >
-              <span className="text-3xl group-hover:scale-110 transition-transform">
-                {categoryIcons[cat] || "🛍️"}
-              </span>
-              <span className="text-sm font-semibold text-gray-800">{cat}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Flash / Promo */}
-      {flashSales.length > 0 && (
-        <section className="bg-gradient-to-r from-amber-50 to-orange-50 border-y border-amber-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold uppercase">
-                Hot Deals
-              </span>
-              <h2 className="text-2xl font-bold text-gray-900">Flash Sales & Promos</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-              {flashSales.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} />
-              ))}
-            </div>
+      {deals.length > 0 && (
+        <section id="deals" className="px-3 pt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap size={16} className="text-orange-500 fill-orange-500" />
+            <h2 className="text-[15px] font-bold text-gray-900">Lightning Deals</h2>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            {deals.slice(0, 4).map((p, i) => (
+              <ProductCard key={p.id} product={p} index={i} />
+            ))}
           </div>
         </section>
       )}
 
-      {/* Featured */}
-      <section id="featured" className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Featured Products</h2>
-          <Link href="#all" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
-            View all <ArrowRight size={14} />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-          {featured.map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
-          ))}
-        </div>
-      </section>
+      {featured.length > 0 && (
+        <section className="px-3 pt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Gift size={16} className="text-orange-500" />
+            <h2 className="text-[15px] font-bold text-gray-900">Featured</h2>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            {featured.map((p, i) => (
+              <ProductCard key={p.id} product={p} index={i} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* All products */}
-      <section id="all" className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">All Products</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-          {allProducts.map((p, i) => (
+      <section className="px-3 pt-6 pb-8">
+        <h2 className="text-[15px] font-bold text-gray-900 mb-3">All Products</h2>
+        <div className="grid grid-cols-2 gap-2.5">
+          {sorted.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
         </div>

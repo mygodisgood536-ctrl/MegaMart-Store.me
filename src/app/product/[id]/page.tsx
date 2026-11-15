@@ -11,7 +11,6 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
-  Star,
   ChevronLeft,
   ChevronRight,
   Share2,
@@ -19,6 +18,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import TopSearch from "@/components/TopSearch";
 
 const products = productsData as Product[];
 
@@ -34,9 +34,9 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Product not found</h1>
-        <Link href="/" className="mt-4 inline-block text-emerald-600 font-medium">
+      <div className="max-w-lg mx-auto px-4 py-20 text-center">
+        <h1 className="text-xl font-bold text-gray-900">Product not found</h1>
+        <Link href="/" className="mt-4 inline-block text-orange-600 font-medium">
           ← Back to store
         </Link>
       </div>
@@ -54,11 +54,11 @@ export default function ProductPage() {
   const handleAdd = () => {
     addItem(product, qty);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
+    setTimeout(() => setAdded(false), 1600);
   };
 
   const handleShare = async () => {
-    const url = window.location.href;
+    const url = typeof window !== "undefined" ? window.location.href : "";
     if (navigator.share) {
       try {
         await navigator.share({
@@ -67,7 +67,7 @@ export default function ProductPage() {
           url,
         });
       } catch {
-        // user cancelled
+        /* cancelled */
       }
     } else {
       await navigator.clipboard.writeText(url);
@@ -77,180 +77,174 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-600 mb-6"
-      >
-        <ArrowLeft size={16} /> Back to store
-      </Link>
+    <div className="max-w-lg mx-auto bg-white min-h-screen">
+      <TopSearch />
 
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Images */}
-        <div>
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-100">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeImage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={product.images[activeImage]}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </motion.div>
-            </AnimatePresence>
+      <div className="px-3 pt-2">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-gray-500 mb-2"
+        >
+          <ArrowLeft size={16} /> Back
+        </Link>
+      </div>
 
-            {product.images.length > 1 && (
-              <>
-                <button
-                  onClick={() =>
-                    setActiveImage((i) => (i === 0 ? product.images.length - 1 : i - 1))
-                  }
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={() =>
-                    setActiveImage((i) => (i === product.images.length - 1 ? 0 : i + 1))
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            )}
+      {/* Images */}
+      <div className="relative aspect-square bg-gray-50">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeImage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={product.images[activeImage]}
+              alt={product.name}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 512px) 100vw, 512px"
+            />
+          </motion.div>
+        </AnimatePresence>
 
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {product.promo && (
-                <span className="px-3 py-1.5 text-xs font-bold uppercase rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow">
-                  {product.promo}
-                </span>
-              )}
-              {discount > 0 && (
-                <span className="px-3 py-1.5 text-xs font-bold rounded-full bg-emerald-600 text-white shadow">
-                  -{discount}% OFF
-                </span>
-              )}
-            </div>
-          </div>
+        {product.images.length > 1 && (
+          <>
+            <button
+              onClick={() =>
+                setActiveImage((i) =>
+                  i === 0 ? product.images.length - 1 : i - 1
+                )
+              }
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow flex items-center justify-center"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() =>
+                setActiveImage((i) =>
+                  i === product.images.length - 1 ? 0 : i + 1
+                )
+              }
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow flex items-center justify-center"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
+        )}
 
-          {product.images.length > 1 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  className={`relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${
-                    activeImage === i ? "border-emerald-500" : "border-transparent opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  <Image src={img} alt="" fill className="object-cover" sizes="64px" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Details */}
-        <div>
-          <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wide">
-            {product.category}
-          </p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
-            {product.name}
-          </h1>
-
-          <div className="flex items-center gap-2 mt-3">
-            <div className="flex items-center gap-1 text-amber-500">
-              <Star size={16} fill="currentColor" />
-              <span className="font-semibold text-gray-800">{product.rating}</span>
-            </div>
-            <span className="text-sm text-gray-400">({product.reviews} reviews)</span>
-          </div>
-
-          <div className="mt-5 flex items-end gap-3">
-            <span className="text-3xl font-bold text-gray-900">
-              {formatPrice(product.price)}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {product.promo && (
+            <span className="px-2 py-1 text-[10px] font-bold uppercase rounded bg-black text-white">
+              {product.promo}
             </span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-lg text-gray-400 line-through mb-1">
-                {formatPrice(product.originalPrice)}
-              </span>
-            )}
-          </div>
-
-          <p className="mt-5 text-gray-600 leading-relaxed">{product.description}</p>
-
-          {/* Quantity */}
-          <div className="mt-8">
-            <label className="text-sm font-medium text-gray-700">Quantity</label>
-            <div className="flex items-center gap-3 mt-2">
-              <button
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 font-medium"
-              >
-                −
-              </button>
-              <span className="w-12 text-center font-semibold text-lg">{qty}</span>
-              <button
-                onClick={() => setQty((q) => q + 1)}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 font-medium"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleAdd}
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white transition-all ${
-                added
-                  ? "bg-emerald-500"
-                  : "bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200"
-              }`}
-            >
-              {added ? (
-                <>
-                  <Check size={20} /> Added to Cart
-                </>
-              ) : (
-                <>
-                  <ShoppingCart size={20} /> Add to Cart
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleShare}
-              className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-gray-200 font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              {copied ? <Check size={18} /> : <Share2 size={18} />}
-              {copied ? "Link copied" : "Share"}
-            </button>
-          </div>
-
-          <p className="mt-4 text-sm text-gray-500">
-            After adding items, go to your cart to place the order via WhatsApp.
-          </p>
+          )}
+          {discount > 0 && (
+            <span className="px-2 py-1 text-[10px] font-bold rounded bg-orange-500 text-white">
+              -{discount}% OFF
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Related */}
+      {product.images.length > 1 && (
+        <div className="flex gap-2 px-3 pt-2 overflow-x-auto hide-scrollbar">
+          {product.images.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveImage(i)}
+              className={`relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 ${
+                activeImage === i ? "border-orange-500" : "border-transparent opacity-70"
+              }`}
+            >
+              <Image src={img} alt="" fill className="object-cover" sizes="56px" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Info */}
+      <div className="px-4 pt-4 pb-6">
+        <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide">
+          {product.category}
+        </p>
+        <h1 className="mt-1 text-xl font-bold text-gray-900 leading-snug">
+          {product.name}
+        </h1>
+
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="text-2xl font-bold text-orange-600">
+            {formatPrice(product.price)}
+          </span>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span className="text-base text-gray-400 line-through">
+              {formatPrice(product.originalPrice)}
+            </span>
+          )}
+        </div>
+
+        <p className="mt-4 text-sm text-gray-600 leading-relaxed">
+          {product.description}
+        </p>
+
+        {/* Qty */}
+        <div className="mt-6">
+          <label className="text-sm font-medium text-gray-700">Quantity</label>
+          <div className="flex items-center gap-3 mt-2">
+            <button
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center font-medium"
+            >
+              −
+            </button>
+            <span className="w-10 text-center font-semibold">{qty}</span>
+            <button
+              onClick={() => setQty((q) => q + 1)}
+              className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center font-medium"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-2">
+          <button
+            onClick={handleAdd}
+            className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white transition-all ${
+              added ? "bg-orange-500" : "bg-black hover:bg-gray-900"
+            }`}
+          >
+            {added ? (
+              <>
+                <Check size={18} /> Added
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={18} /> Add to Cart
+              </>
+            )}
+          </button>
+          <button
+            onClick={handleShare}
+            className="px-4 py-3.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50"
+          >
+            {copied ? <Check size={18} /> : <Share2 size={18} />}
+          </button>
+        </div>
+
+        <p className="mt-3 text-xs text-gray-400 text-center">
+          After adding items, open Cart to order via WhatsApp
+        </p>
+      </div>
+
       {related.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-xl font-bold text-gray-900 mb-5">You may also like</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
+        <section className="px-3 pb-10">
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">You may also like</h2>
+          <div className="grid grid-cols-2 gap-2.5">
             {related.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
             ))}
