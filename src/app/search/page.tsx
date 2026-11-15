@@ -27,7 +27,7 @@ function SearchResults() {
   }, [q]);
 
   return (
-    <div className="max-w-lg mx-auto bg-white min-h-screen">
+    <div className="bg-white min-h-screen">
       <TopSearch />
 
       <div className="px-3 pt-3 pb-8">
@@ -71,7 +71,7 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-lg mx-auto p-8 text-center text-gray-500">
+        <div className="p-8 text-center text-gray-500">
           Searching...
         </div>
       }

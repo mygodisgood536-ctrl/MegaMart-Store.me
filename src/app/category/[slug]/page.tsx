@@ -23,7 +23,7 @@ export default function CategoryPage() {
     categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
 
   return (
-    <div className="max-w-lg mx-auto bg-white min-h-screen">
+    <div className="bg-white min-h-screen">
       <TopSearch />
 
       <div className="px-3 pt-3 pb-8">

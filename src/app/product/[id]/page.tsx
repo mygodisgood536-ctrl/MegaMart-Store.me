@@ -34,7 +34,7 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-20 text-center">
+      <div className="px-4 py-20 text-center">
         <h1 className="text-xl font-bold text-gray-900">Product not found</h1>
         <Link href="/" className="mt-4 inline-block text-orange-600 font-medium">
           ← Back to store
@@ -77,7 +77,7 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white min-h-screen">
+    <div className="bg-white min-h-screen">
       <TopSearch />
 
       <div className="px-3 pt-2">

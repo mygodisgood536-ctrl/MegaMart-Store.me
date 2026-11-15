@@ -28,7 +28,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-20 text-center min-h-screen bg-white">
+      <div className="px-4 py-20 text-center min-h-screen bg-white">
         <div className="w-16 h-16 mx-auto rounded-full bg-orange-50 flex items-center justify-center mb-5">
           <ShoppingBag size={28} className="text-orange-400" />
         </div>
@@ -47,7 +47,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto bg-white min-h-screen px-3 pt-4 pb-8">
+    <div className="bg-white min-h-screen px-3 pt-4 pb-8">
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-xl font-bold text-gray-900">
           Cart ({items.reduce((s, i) => s + i.quantity, 0)})
